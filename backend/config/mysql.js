@@ -11,17 +11,26 @@ dotenv.config();
 
 const dbName = process.env.MYSQL_DATABASE || 'tvk';
 const dbUser = process.env.MYSQL_USER || 'root';
-const dbPassword = process.env.MYSQL_PASSWORD || 'suganth@2008';
+const dbPassword = process.env.MYSQL_PASSWORD || '';
 const dbHost = process.env.MYSQL_HOST || 'localhost';
 const dbPort = parseInt(process.env.MYSQL_PORT || '3306', 10);
+
+// Cloud MySQL (Aiven, TiDB) requires TLS. Set MYSQL_SSL=true to enable it.
+// MYSQL_CA_CERT holds the provider's CA certificate (PEM text) when it is not
+// publicly trusted, as with Aiven. Escaped "\n" sequences are turned into newlines.
+const sslEnabled = process.env.MYSQL_SSL === 'true';
+const caCert = (process.env.MYSQL_CA_CERT || '').replace(/\\n/g, '\n').trim();
 
 export const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
   host: dbHost,
   port: dbPort,
   dialect: 'mysql',
   logging: false,
+  dialectOptions: sslEnabled
+    ? { ssl: caCert ? { ca: caCert, rejectUnauthorized: true } : { rejectUnauthorized: true } }
+    : {},
   pool: {
-    max: 20,
+    max: parseInt(process.env.MYSQL_POOL_MAX || '20', 10),
     min: 0,
     acquire: 30000,
     idle: 10000,

@@ -31,6 +31,10 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 dotenv.config();
 
+// Locally, default demo passwords are restored on every start. In production
+// (NODE_ENV=production) existing passwords are left alone so changed ones stick.
+const resetDemoPasswords = process.env.NODE_ENV !== 'production';
+
 export const seedMySQLDatabase = async () => {
   try {
     console.log('🌱 Checking and seeding initial Coimbatore District data into MySQL...');
@@ -51,7 +55,7 @@ export const seedMySQLDatabase = async () => {
       });
       console.log('👤 Created default superadmin: admin');
     } else {
-      adminUser.password = 'Vigneshadmin@2026';
+      if (resetDemoPasswords) adminUser.password = 'Vigneshadmin@2026';
       await adminUser.save();
     }
 
@@ -72,7 +76,7 @@ export const seedMySQLDatabase = async () => {
       });
       console.log('👤 Created subadmin: subadmin');
     } else {
-      subAdmin.password = 'Subadmin@2024';
+      if (resetDemoPasswords) subAdmin.password = 'Subadmin@2024';
       await subAdmin.save();
     }
 
@@ -112,7 +116,7 @@ export const seedMySQLDatabase = async () => {
       });
       console.log('👤 Created ward secretary: ward / ward123');
     } else {
-      wardUser.password = 'ward123';
+      if (resetDemoPasswords) wardUser.password = 'ward123';
       await wardUser.save();
     }
 
@@ -131,7 +135,7 @@ export const seedMySQLDatabase = async () => {
         isActive: true,
       });
     } else {
-      wardSecretary.password = 'ward123';
+      if (resetDemoPasswords) wardSecretary.password = 'ward123';
       await wardSecretary.save();
     }
 
@@ -156,7 +160,7 @@ export const seedMySQLDatabase = async () => {
           isActive: true,
         });
       } else {
-        pUser.password = pa.password;
+        if (resetDemoPasswords) pUser.password = pa.password;
         pUser.role = 'paguthi_seyalaalar';
         pUser.paguthi = pa.paguthi;
         await pUser.save();
