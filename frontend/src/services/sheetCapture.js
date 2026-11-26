@@ -1,23 +1,20 @@
 import bcrypt from 'bcryptjs';
 
 /**
- * Frontend-only mode (interim, until the backend is deployed).
+ * Google Sheet copy of signups and logins.
  *
- * When VITE_SIGNUP_SHEET_URL is set at build time:
- *  - Signups are sent to a Google Apps Script web app ("Signups" tab).
- *  - Login skips authentication: the visitor's full name + mobile number are
- *    recorded ("Logins" tab) and they are taken straight to the portal.
- *
- * When it is not set, signup and login use the regular backend API.
+ * Signup and login always go through the backend API. When
+ * VITE_SIGNUP_SHEET_URL is set at build time, each successful signup is also
+ * copied to the "Signups" tab and each successful login to the "Logins" tab of
+ * a Google Apps Script web app. These copies are best-effort: a failure is
+ * logged to the console and never blocks the user.
  *
  * Signup passwords are never sent in plain text: they are bcrypt-hashed in the
- * browser (same format the backend stores in users.password), so collected
- * rows can later be imported into the database.
+ * browser before being sent to the sheet.
  */
 export const SIGNUP_SHEET_URL = (import.meta.env.VITE_SIGNUP_SHEET_URL || '').trim();
 
 export const isSheetSignupEnabled = Boolean(SIGNUP_SHEET_URL);
-export const isFrontendOnlyMode = isSheetSignupEnabled;
 
 const BCRYPT_ROUNDS = 10;
 
