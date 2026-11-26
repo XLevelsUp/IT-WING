@@ -5,8 +5,9 @@
  *   type "signup" -> "Signups" tab (duplicate mobile numbers rejected)
  *   type "login"  -> "Logins" tab  (every login recorded)
  *
- * Setup: Extensions > Apps Script in the target sheet, paste this file,
- * then Deploy > New deployment > Web app (Execute as: Me, Access: Anyone).
+ * Setup: create this from the sheet itself (Extensions > Apps Script), paste
+ * this file, run "setup" once from the editor, then
+ * Deploy > New deployment > Web app (Execute as: Me, Access: Anyone).
  * Put the resulting /exec URL in VITE_SIGNUP_SHEET_URL for the frontend build.
  * After editing: Deploy > Manage deployments > Edit > Version: New version
  * (keeps the same URL).
@@ -34,11 +35,18 @@ const LOGIN_SHEET = {
   headers: ['Logged In At', 'Full Name', 'Mobile Number', 'Portal'],
 };
 
-function doPost(e) {
-  const lock = LockService.getScriptLock();
-  try {
-    lock.waitLock(15000);
+/**
+ * Run this once from the Apps Script editor (select "setup" > Run).
+ * It grants permissions and creates both tabs with headers.
+ */
+function setup() {
+  getSheet(SIGNUP_SHEET);
+  getSheet(LOGIN_SHEET);
+  console.log('Setup complete: "' + SIGNUP_SHEET.name + '" and "' + LOGIN_SHEET.name + '" tabs are ready.');
+}
 
+function doPost(e) {
+  try {
     let data;
     try {
       data = JSON.parse((e && e.postData && e.postData.contents) || '{}');
@@ -59,8 +67,6 @@ function doPost(e) {
   } catch (err) {
     console.error(err);
     return jsonResponse({ success: false, message: 'Server busy. Please try again.' });
-  } finally {
-    lock.releaseLock();
   }
 }
 
@@ -85,34 +91,44 @@ function handleSignup(data) {
     return jsonResponse({ success: false, message: 'Invalid request.' });
   }
 
-  const sheet = getSheet(SIGNUP_SHEET);
+  // The lock only guards the duplicate check against two simultaneous signups
+  // with the same number. If it cannot be obtained quickly, carry on without it
+  // rather than losing the registration.
+  const lock = LockService.getScriptLock();
+  const locked = lock.tryLock(5000);
+  try {
+    const sheet = getSheet(SIGNUP_SHEET);
 
-  const lastRow = sheet.getLastRow();
-  if (lastRow > 1) {
-    const existing = sheet
-      .getRange(2, SIGNUP_SHEET.phoneColumn, lastRow - 1, 1)
-      .getValues()
-      .map(function (r) { return String(r[0]).replace(/\D/g, ''); });
-    if (existing.indexOf(phone) !== -1) {
-      return jsonResponse({
-        success: false,
-        message: 'An account with this phone number is already registered.',
-      });
+    const lastRow = sheet.getLastRow();
+    if (lastRow > 1) {
+      const existing = sheet
+        .getRange(2, SIGNUP_SHEET.phoneColumn, lastRow - 1, 1)
+        .getValues()
+        .map(function (r) { return String(r[0]).replace(/\D/g, ''); });
+      if (existing.indexOf(phone) !== -1) {
+        return jsonResponse({
+          success: false,
+          message: 'An account with this phone number is already registered.',
+        });
+      }
     }
-  }
 
-  sheet.appendRow([
-    new Date(),
-    asText(name),
-    asText(phone),
-    asText(paguthi),
-    asText(village),
-    asText(wardNumber),
-    asText(ward),
-    asText(constituency),
-    asText(passwordHash),
-    'Pending',
-  ]);
+    sheet.appendRow([
+      new Date(),
+      asText(name),
+      asText(phone),
+      asText(paguthi),
+      asText(village),
+      asText(wardNumber),
+      asText(ward),
+      asText(constituency),
+      asText(passwordHash),
+      'Pending',
+    ]);
+    SpreadsheetApp.flush();
+  } finally {
+    if (locked) lock.releaseLock();
+  }
 
   return jsonResponse({ success: true, message: 'Registration received.' });
 }
@@ -127,6 +143,7 @@ function handleLogin(data) {
     return jsonResponse({ success: false, message: 'Please enter a valid 10-digit mobile number.' });
   }
 
+  // appendRow is atomic on its own, so logins need no lock
   getSheet(LOGIN_SHEET).appendRow([new Date(), asText(name), asText(phone), asText(portal)]);
 
   return jsonResponse({ success: true });
@@ -137,15 +154,30 @@ function doGet() {
   return jsonResponse({ success: true, status: 'ok' });
 }
 
-function getSheet(config) {
+function getSpreadsheet() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss) {
+    throw new Error(
+      'No spreadsheet attached. Create this script from the sheet via Extensions > Apps Script.'
+    );
+  }
+  return ss;
+}
+
+function getSheet(config) {
+  const ss = getSpreadsheet();
   let sheet = ss.getSheetByName(config.name);
   if (!sheet) {
-    sheet = ss.insertSheet(config.name);
+    try {
+      sheet = ss.insertSheet(config.name);
+    } catch (err) {
+      // Another request created it at the same moment
+      sheet = ss.getSheetByName(config.name);
+      if (!sheet) throw err;
+    }
   }
   if (sheet.getLastRow() === 0) {
-    sheet.appendRow(config.headers);
-    sheet.getRange(1, 1, 1, config.headers.length).setFontWeight('bold');
+    sheet.getRange(1, 1, 1, config.headers.length).setValues([config.headers]).setFontWeight('bold');
     sheet.setFrozenRows(1);
   }
   return sheet;

@@ -17,12 +17,16 @@ export const AuthProvider = ({ children }) => {
 
       if (token && savedUser) {
         try {
-          setUser(JSON.parse(savedUser));
-          // Frontend-only mode: no backend to verify the session against
+          // Frontend-only mode: no backend to verify the session against, and
+          // only the normal user portal is available (older demo sessions may hold other roles)
           if (isFrontendOnlyMode) {
+            const localUser = { ...JSON.parse(savedUser), role: 'citizen' };
+            localStorage.setItem('tvk_crm_user', JSON.stringify(localUser));
+            setUser(localUser);
             setLoading(false);
             return;
           }
+          setUser(JSON.parse(savedUser));
           // Verify with backend
           const res = await api.get('/auth/me');
           if (res.data.success) {

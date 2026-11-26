@@ -32,7 +32,8 @@ export const LoginPage = () => {
   const { error: notifyError, success: notifySuccess } = useNotification();
 
   // Role selections matching specifications
-  const [selectedRole, setSelectedRole] = useState('admin');
+  // Frontend-only mode is limited to the normal user (citizen) login
+  const [selectedRole, setSelectedRole] = useState(isFrontendOnlyMode ? 'citizen' : 'admin');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -42,15 +43,6 @@ export const LoginPage = () => {
   const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
   // Honeypot (frontend-only mode): hidden from people, bots tend to fill it in
   const [website, setWebsite] = useState('');
-
-  // Login dropdown key -> application role used by route guards
-  const ROLE_KEY_TO_APP_ROLE = {
-    admin: 'superadmin',
-    subadmin: 'subadmin',
-    citizen: 'citizen',
-    ward_secretary: 'ward_secretary',
-    paguthi_seyalaalar: 'paguthi_seyalaalar',
-  };
 
   const rolesConfig = {
     admin: {
@@ -143,7 +135,7 @@ export const LoginPage = () => {
       }
 
       // Fire-and-forget: navigation is not held up by the sheet request
-      logLoginToSheet({ name: fullName, phoneNumber: mobile, portal: currentRole.title, website })
+      logLoginToSheet({ name: fullName, phoneNumber: mobile, portal: rolesConfig.citizen.title, website })
         .catch((err) => console.warn('Login details could not be recorded:', err.message));
 
       loginLocally({
@@ -152,7 +144,7 @@ export const LoginPage = () => {
         name: fullName,
         username: mobile,
         phone: mobile,
-        role: ROLE_KEY_TO_APP_ROLE[selectedRole] || 'citizen',
+        role: 'citizen',
         assignedDistrict: 'Coimbatore',
         constituency: 'Kinathukadavu',
         paguthi: '',
@@ -160,7 +152,7 @@ export const LoginPage = () => {
         assignedWard: '',
         wardId: null,
       });
-      navigate(currentRole.redirect);
+      navigate(rolesConfig.citizen.redirect);
       return;
     }
 
@@ -356,7 +348,8 @@ export const LoginPage = () => {
                   </div>
                 )}
 
-                {/* 1. SELECT LOGIN ROLE DROPDOWN */}
+                {/* 1. SELECT LOGIN ROLE DROPDOWN (hidden in frontend-only mode: user login only) */}
+                {!isFrontendOnlyMode && (
                 <div className="relative">
                   <label className="block text-[10px] font-bold text-[#252525] mb-0.5 tracking-wider uppercase">
                     {t('auth.selectRole')}
@@ -404,6 +397,7 @@ export const LoginPage = () => {
                     </div>
                   )}
                 </div>
+                )}
 
                 {/* 2. USERNAME / MOBILE FIELD */}
                 <div>
