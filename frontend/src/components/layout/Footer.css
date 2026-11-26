@@ -1,0 +1,28 @@
+/* TVK CRM Global Footer Seamless Marquee Animation */
+@keyframes tvkFooterMarquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.tvk-footer-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: tvkFooterMarquee 26s linear infinite;
+}
+
+.tvk-footer-track:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tvk-footer-track {
+    animation: none !important;
+    width: 100%;
+    justify-content: center;
+  }
+}

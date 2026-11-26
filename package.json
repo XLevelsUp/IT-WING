@@ -1,0 +1,23 @@
+{
+  "name": "tvk-coimbatore-crm",
+  "version": "1.0.0",
+  "description": "TVK Digital Governance CRM - Coimbatore District Grievance Management System",
+  "scripts": {
+    "server": "cd backend && node server.js",
+    "client": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "seed": "cd backend && node seeds/seedData.js"
+  },
+  "keywords": [
+    "tvk",
+    "crm",
+    "coimbatore",
+    "grievance-management",
+    "mern",
+    "react",
+    "express",
+    "mongodb"
+  ],
+  "author": "TVK Coimbatore IT Wing",
+  "license": "ISC"
+}
