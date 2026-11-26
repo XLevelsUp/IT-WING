@@ -12,9 +12,11 @@ import {
   AlertCircle,
   LogIn,
   MapPin,
+  Phone,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
+import { isFrontendOnlyMode, logLoginToSheet } from '../../services/sheetCapture';
 import { useNotification } from '../../context/NotificationContext';
 import LanguageSwitcher from '../../components/common/LanguageSwitcher';
 import Footer from '../../components/layout/Footer';
@@ -25,7 +27,7 @@ import image3 from '../../assets/image3.png';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, loginLocally } = useAuth();
   const { t } = useTranslation();
   const { error: notifyError, success: notifySuccess } = useNotification();
 
@@ -38,6 +40,17 @@ export const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
+  // Honeypot (frontend-only mode): hidden from people, bots tend to fill it in
+  const [website, setWebsite] = useState('');
+
+  // Login dropdown key -> application role used by route guards
+  const ROLE_KEY_TO_APP_ROLE = {
+    admin: 'superadmin',
+    subadmin: 'subadmin',
+    citizen: 'citizen',
+    ward_secretary: 'ward_secretary',
+    paguthi_seyalaalar: 'paguthi_seyalaalar',
+  };
 
   const rolesConfig = {
     admin: {
@@ -115,6 +128,41 @@ export const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');
+
+    // Frontend-only mode: record name + mobile number, skip authentication, go to the portal
+    if (isFrontendOnlyMode) {
+      const fullName = username.trim();
+      const mobile = password.trim();
+      if (!fullName) {
+        setErrorMessage(t('auth.namePlaceholder', 'Enter full name'));
+        return;
+      }
+      if (!/^[6-9]\d{9}$/.test(mobile)) {
+        setErrorMessage('Please enter a valid 10-digit Indian mobile number (e.g., 9842567890)');
+        return;
+      }
+
+      // Fire-and-forget: navigation is not held up by the sheet request
+      logLoginToSheet({ name: fullName, phoneNumber: mobile, portal: currentRole.title, website })
+        .catch((err) => console.warn('Login details could not be recorded:', err.message));
+
+      loginLocally({
+        _id: `local-${mobile}`,
+        id: null,
+        name: fullName,
+        username: mobile,
+        phone: mobile,
+        role: ROLE_KEY_TO_APP_ROLE[selectedRole] || 'citizen',
+        assignedDistrict: 'Coimbatore',
+        constituency: 'Kinathukadavu',
+        paguthi: '',
+        village: '',
+        assignedWard: '',
+        wardId: null,
+      });
+      navigate(currentRole.redirect);
+      return;
+    }
 
     if (!username.trim() || !password) {
       setErrorMessage(t('auth.enterPassword'));
@@ -292,7 +340,22 @@ export const LoginPage = () => {
               )}
 
               <form onSubmit={handleSubmit} autoComplete="off" className="space-y-2">
-                
+                {isFrontendOnlyMode && (
+                  /* Honeypot field (hidden from users and screen readers) */
+                  <div aria-hidden="true" className="absolute -left-[9999px] w-px h-px overflow-hidden">
+                    <label>
+                      Website
+                      <input
+                        type="text"
+                        tabIndex={-1}
+                        autoComplete="off"
+                        value={website}
+                        onChange={(e) => setWebsite(e.target.value)}
+                      />
+                    </label>
+                  </div>
+                )}
+
                 {/* 1. SELECT LOGIN ROLE DROPDOWN */}
                 <div className="relative">
                   <label className="block text-[10px] font-bold text-[#252525] mb-0.5 tracking-wider uppercase">
@@ -345,7 +408,7 @@ export const LoginPage = () => {
                 {/* 2. USERNAME / MOBILE FIELD */}
                 <div>
                   <label className="block text-[10px] font-bold text-[#252525] mb-0.5 tracking-wider uppercase">
-                    {currentRole.userLabel}
+                    {isFrontendOnlyMode ? t('memberDetail.fullName', 'Full Name') : currentRole.userLabel}
                   </label>
                   <div className="relative">
                     <User className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -353,15 +416,37 @@ export const LoginPage = () => {
                       type="text"
                       required
                       autoComplete="off"
+                      maxLength={isFrontendOnlyMode ? 150 : undefined}
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
-                      placeholder={currentRole.userPlaceholder}
+                      placeholder={isFrontendOnlyMode ? t('auth.namePlaceholder', 'Enter full name') : currentRole.userPlaceholder}
                       className="w-full bg-white border border-[#E9E2DC] rounded-xl pl-9 pr-3 py-1.5 text-xs sm:text-sm text-[#252525] placeholder-slate-400 focus:outline-none focus:border-[#B00000] focus:ring-2 focus:ring-[#B00000]/20 transition"
                     />
                   </div>
                 </div>
 
-                {/* 3. PASSWORD FIELD */}
+                {/* 3. PASSWORD FIELD (Mobile Number in frontend-only mode) */}
+                {isFrontendOnlyMode ? (
+                <div>
+                  <label className="block text-[10px] font-bold text-[#252525] mb-0.5 tracking-wider uppercase">
+                    {t('common.mobileNumber', 'Mobile Number')}
+                  </label>
+                  <div className="relative">
+                    <Phone className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="tel"
+                      inputMode="numeric"
+                      required
+                      maxLength={10}
+                      autoComplete="off"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value.replace(/\D/g, ''))}
+                      placeholder={t('auth.phonePlaceholder', 'Enter 10-digit mobile number')}
+                      className="w-full bg-white border border-[#E9E2DC] rounded-xl pl-9 pr-3 py-1.5 text-xs sm:text-sm text-[#252525] placeholder-slate-400 focus:outline-none focus:border-[#B00000] focus:ring-2 focus:ring-[#B00000]/20 transition"
+                    />
+                  </div>
+                </div>
+                ) : (
                 <div>
                   <label className="block text-[10px] font-bold text-[#252525] mb-0.5 tracking-wider uppercase">
                     {t('auth.password')}
@@ -386,6 +471,7 @@ export const LoginPage = () => {
                     </button>
                   </div>
                 </div>
+                )}
 
                 {/* Remember Me & Forgot Password */}
                 <div className="flex items-center justify-between text-xs pt-0.5">
@@ -398,12 +484,14 @@ export const LoginPage = () => {
                     />
                     <span>{t('auth.rememberMe')}</span>
                   </label>
-                  <Link
-                    to="/forgot-password"
-                    className="font-semibold text-[#A00000] hover:underline text-[11px]"
-                  >
-                    {t('auth.forgotPassword')}
-                  </Link>
+                  {!isFrontendOnlyMode && (
+                    <Link
+                      to="/forgot-password"
+                      className="font-semibold text-[#A00000] hover:underline text-[11px]"
+                    >
+                      {t('auth.forgotPassword')}
+                    </Link>
+                  )}
                 </div>
 
                 {/* 4. SUBMIT BUTTON */}

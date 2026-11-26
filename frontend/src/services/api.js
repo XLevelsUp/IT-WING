@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { isFrontendOnlyMode } from './sheetCapture';
 
 const api = axios.create({
   baseURL: '/api',
@@ -23,7 +24,8 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && error.response.status === 401) {
+    // Frontend-only mode has no backend sessions, so a 401 must not end the local session
+    if (!isFrontendOnlyMode && error.response && error.response.status === 401) {
       // If unauthorized and not already on login page, clear session
       if (window.location.pathname !== '/login') {
         localStorage.removeItem('tvk_crm_token');

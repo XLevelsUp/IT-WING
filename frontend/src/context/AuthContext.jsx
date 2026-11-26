@@ -1,5 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import api from '../services/api';
+import { isFrontendOnlyMode } from '../services/sheetCapture';
+
+const FRONTEND_ONLY_TOKEN = 'frontend-only-session';
 
 const AuthContext = createContext();
 
@@ -15,6 +18,11 @@ export const AuthProvider = ({ children }) => {
       if (token && savedUser) {
         try {
           setUser(JSON.parse(savedUser));
+          // Frontend-only mode: no backend to verify the session against
+          if (isFrontendOnlyMode) {
+            setLoading(false);
+            return;
+          }
           // Verify with backend
           const res = await api.get('/auth/me');
           if (res.data.success) {
@@ -46,6 +54,16 @@ export const AuthProvider = ({ children }) => {
     throw new Error(res.data.message || 'Login failed');
   };
 
+  // Frontend-only mode: start a local session without backend authentication
+  const loginLocally = (userData) => {
+    if (!isFrontendOnlyMode) {
+      throw new Error('Local login is only available in frontend-only mode');
+    }
+    localStorage.setItem('tvk_crm_token', FRONTEND_ONLY_TOKEN);
+    localStorage.setItem('tvk_crm_user', JSON.stringify(userData));
+    setUser(userData);
+  };
+
   const logout = () => {
     localStorage.removeItem('tvk_crm_token');
     localStorage.removeItem('tvk_crm_user');
@@ -60,7 +78,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, updateUser, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ user, loading, login, loginLocally, logout, updateUser, isAuthenticated: !!user }}>
       {children}
     </AuthContext.Provider>
   );

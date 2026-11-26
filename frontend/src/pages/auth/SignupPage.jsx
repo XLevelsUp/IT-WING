@@ -12,9 +12,11 @@ import {
   MapPin,
   Landmark,
   Home,
+  CheckCircle2,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import api from '../../services/api';
+import { isSheetSignupEnabled, submitSignupToSheet } from '../../services/sheetCapture';
 import { useNotification } from '../../context/NotificationContext';
 import LanguageSwitcher from '../../components/common/LanguageSwitcher';
 import Footer from '../../components/layout/Footer';
@@ -48,9 +50,14 @@ export const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  // Honeypot: hidden from people, bots tend to fill it in
+  const [website, setWebsite] = useState('');
 
   // Fetch actual master ward records from backend
   useEffect(() => {
+    // Frontend-only deployment: no backend to query, built-in ward rules are used
+    if (isSheetSignupEnabled) return;
     const fetchLocations = async () => {
       try {
         const res = await api.get('/auth/location-options');
@@ -185,6 +192,23 @@ export const SignupPage = () => {
 
     setLoading(true);
     try {
+      if (isSheetSignupEnabled) {
+        await submitSignupToSheet({
+          name: cleanName,
+          phoneNumber: cleanPhone,
+          password,
+          paguthi,
+          village: village || '',
+          wardNumber,
+          assignedWard,
+          constituency: constituency || 'Kinathukadavu',
+          website,
+        });
+        setSubmitted(true);
+        notifySuccess(t('auth.signupReceivedToast', 'Registration received successfully!'));
+        return;
+      }
+
       const res = await api.post('/auth/register', {
         name: cleanName,
         phoneNumber: cleanPhone,
@@ -311,8 +335,30 @@ export const SignupPage = () => {
 
           {/* ================= RIGHT PANEL (ONLY 3 FIELDS SIGNUP FORM) ================= */}
           <div className="w-full md:w-[46%] lg:w-[44%] p-4 sm:p-6 md:p-8 flex flex-col justify-center bg-white">
+            {submitted ? (
+            <div className="max-w-md w-full mx-auto text-center space-y-4 py-6">
+              <div className="mx-auto w-14 h-14 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center">
+                <CheckCircle2 className="w-7 h-7 text-emerald-600" />
+              </div>
+              <h2 className="text-xl sm:text-2xl font-extrabold text-[#A00000] tracking-tight">
+                {t('auth.signupReceivedTitle', 'Registration Received')}
+              </h2>
+              <p className="text-xs sm:text-sm text-[#555] leading-relaxed">
+                {t(
+                  'auth.signupReceivedMessage',
+                  'Thank you for registering. Your details have been recorded. You will be able to sign in with your mobile number and password once the citizen portal is activated.'
+                )}
+              </p>
+              <Link
+                to="/login"
+                className="inline-block text-xs font-bold text-[#A00000] hover:underline"
+              >
+                {t('auth.signIn')} →
+              </Link>
+            </div>
+            ) : (
             <div className="max-w-md w-full mx-auto space-y-3.5 sm:space-y-4">
-              
+
               {/* Form Title & Subtitle */}
               <div>
                 <h2 className="text-xl sm:text-2xl font-extrabold text-[#A00000] tracking-tight">
@@ -332,7 +378,20 @@ export const SignupPage = () => {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-3.5">
-                
+                {/* Honeypot field (hidden from users and screen readers) */}
+                <div aria-hidden="true" className="absolute -left-[9999px] w-px h-px overflow-hidden">
+                  <label>
+                    Website
+                    <input
+                      type="text"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={website}
+                      onChange={(e) => setWebsite(e.target.value)}
+                    />
+                  </label>
+                </div>
+
                 {/* FIELD 1: NAME */}
                 <div>
                   <label className="block text-[11px] font-bold text-[#252525] mb-1 tracking-wider uppercase">
@@ -542,6 +601,7 @@ export const SignupPage = () => {
               </div>
 
             </div>
+            )}
           </div>
 
         </div>
