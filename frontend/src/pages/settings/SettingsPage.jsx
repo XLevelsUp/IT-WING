@@ -104,12 +104,13 @@ export const SettingsPage = () => {
     if (!secForm.paguthi) return [];
     const canonicalP = secForm.paguthi === 'Podanur' ? 'Pothanur' : secForm.paguthi;
 
+    const ruleNums = getWardsForPaguthi(canonicalP);
+
+    // Only DB wards whose number is allowed for this Paguthi (blocks mis-mapped records)
     const dbWards = wards.filter((w) => {
       const wp = w.paguthi === 'Podanur' ? 'Pothanur' : w.paguthi;
-      return wp === canonicalP;
+      return wp === canonicalP && ruleNums.includes(Number(w.wardNumber));
     });
-
-    const ruleNums = getWardsForPaguthi(canonicalP);
     const combined = [];
     const seenNumbers = new Set();
 

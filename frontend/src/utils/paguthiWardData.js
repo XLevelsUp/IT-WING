@@ -173,9 +173,6 @@ export const getWardsForPaguthi = (paguthi) => {
   if (p === 'Kurichi') {
     return [85, 96, 98];
   }
-  if (p === 'Malumachampatti' || paguthi === 'Malumichampatti') {
-    return [95, ...REMAINING_TEN_WARDS];
-  }
   return REMAINING_TEN_WARDS;
 };
 

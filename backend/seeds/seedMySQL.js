@@ -223,7 +223,7 @@ export const seedMySQLDatabase = async () => {
       { constituencyId: southConst.id, paguthi: 'Ukkadam', wardNumber: 80, wardName: 'Ukkadam', tamilName: 'உக்கடம்', zone: 'South Zone', officeBearer: 'S. Mohammed Ismail', wardSecretary: 'S. Mohammed Ismail', contactNumber: '9842100080', population: 46000, areaCoverage: 'Karumbukadai, Ukkadam Bus Stand, Bilal Nagar' },
       { constituencyId: southConst.id, paguthi: 'Town Hall', wardNumber: 82, wardName: 'Town Hall', tamilName: 'டவுன் ஹால்', zone: 'Central Zone', officeBearer: 'R. Soundararajan', wardSecretary: 'R. Soundararajan', contactNumber: '9842100082', population: 31000, areaCoverage: 'Big Bazaar Street, Raja Street, Oppanakara St' },
       { constituencyId: southConst.id, paguthi: 'Ukkadam', wardNumber: 84, wardName: 'Selvapuram', tamilName: 'செல்வபுரம்', zone: 'South Zone', officeBearer: 'P. Murugesan', wardSecretary: 'P. Murugesan', contactNumber: '9842100084', population: 34000, areaCoverage: 'Perur Main Road, Sivalingam Colony' },
-      { constituencyId: southConst.id, paguthi: 'Ukkadam', wardNumber: 85, wardName: 'Kuniamuthur', tamilName: 'குனியமுத்தூர்', zone: 'South Zone', officeBearer: 'N. Palanisamy', wardSecretary: 'N. Palanisamy', contactNumber: '9842100085', population: 48000, areaCoverage: 'Palakkad Main Road, Sundakkamuthur' },
+      { constituencyId: kinathuConst.id, paguthi: 'Kurichi', wardNumber: 85, wardName: 'Kuniamuthur', tamilName: 'குனியமுத்தூர்', zone: 'South Zone', officeBearer: 'N. Palanisamy', wardSecretary: 'N. Palanisamy', contactNumber: '9842100085', population: 48000, areaCoverage: 'Palakkad Main Road, Sundakkamuthur' },
       { constituencyId: northConst.id, paguthi: 'Ganapathy', wardNumber: 54, wardName: 'Ganapathy', tamilName: 'கணபதி', zone: 'North Zone', officeBearer: 'A. Karthik', wardSecretary: 'A. Karthik', contactNumber: '9842100054', population: 52000, areaCoverage: 'Sathy Road, Textool, Maniyakarampalayam' },
       { constituencyId: northConst.id, paguthi: 'Saravanampatti', wardNumber: 57, wardName: 'Saravanampatti', tamilName: 'சரவணம்பட்டி', zone: 'North Zone', officeBearer: 'V. Prakash', wardSecretary: 'V. Prakash', contactNumber: '9842100057', population: 56000, areaCoverage: 'IT Corridor, Sivanandapuram, Keeranatham Rd' },
       { constituencyId: northConst.id, paguthi: 'Gandhipuram', wardNumber: 65, wardName: 'Gandhipuram', tamilName: 'காந்திபுரம்', zone: 'Central Zone', officeBearer: 'D. Selvaraj', wardSecretary: 'D. Selvaraj', contactNumber: '9842100065', population: 29000, areaCoverage: 'Cross Cut Road, 100 Feet Road, 7th Street' },
@@ -235,7 +235,7 @@ export const seedMySQLDatabase = async () => {
       { constituencyId: kinathuConst.id, paguthi: 'Pothanur', wardNumber: 99, wardName: 'Pothanur Junction', tamilName: 'போத்தனூர் சந்திப்பு', zone: 'South Zone', officeBearer: 'R. Velusamy', wardSecretary: 'R. Velusamy', contactNumber: '9842100099', population: 38000, areaCoverage: 'Railway Colony, Subbiah Layout' },
       { constituencyId: kinathuConst.id, paguthi: 'Pothanur', wardNumber: 100, wardName: 'Pothanur Ward 100', tamilName: 'போத்தனூர் வார்டு 100', zone: 'South Zone', officeBearer: 'R. Velusamy', wardSecretary: 'R. Velusamy', contactNumber: '9842100010', population: 35000, areaCoverage: 'Pillaiyar Kovil St, Market Area' },
       { constituencyId: kinathuConst.id, paguthi: 'Sundarapuram', wardNumber: 94, wardName: 'Sundarapuram East', tamilName: 'சுந்தராபுரம் கிழக்கு', zone: 'South Zone', officeBearer: 'S. Thirumoorthy', wardSecretary: 'S. Thirumoorthy', contactNumber: '9842100094', population: 32000, areaCoverage: 'Chettipalayam Pirivu, Othakkalmandapam Link' },
-      { constituencyId: kinathuConst.id, paguthi: 'Malumachampatti', village: 'Malumachampatti', wardNumber: 95, wardName: 'Malumichampatti South', tamilName: 'மலுமிச்சம்பட்டி தெற்கு', zone: 'South Zone', officeBearer: 'N. Arumugam', wardSecretary: 'N. Arumugam', contactNumber: '9842100095', population: 29000, areaCoverage: 'Bodipalayam, Arasur Link, Bharathi Nagar' },
+      { constituencyId: kinathuConst.id, paguthi: 'Pothanur', wardNumber: 95, wardName: 'Pothanur Ward 95', tamilName: 'போத்தனூர் வார்டு 95', zone: 'South Zone', officeBearer: 'N. Arumugam', wardSecretary: 'N. Arumugam', contactNumber: '9842100095', population: 29000, areaCoverage: 'Bodipalayam, Arasur Link, Bharathi Nagar' },
     ];
 
     const wardDocs = [];
@@ -262,7 +262,9 @@ export const seedMySQLDatabase = async () => {
         });
       }
 
-      let existing = await Ward.findOne({ where: { wardNumber: w.wardNumber } });
+      // Prefer the row already mapped to this Paguthi; never re-attach a detached (paguthi = '') duplicate
+      const sameNumber = await Ward.findAll({ where: { wardNumber: w.wardNumber }, order: [['id', 'ASC']] });
+      let existing = sameNumber.find((r) => r.paguthi === w.paguthi) || sameNumber.find((r) => r.paguthi) || null;
       if (!existing) {
         w.wardSecretaryId = wardSecUser ? wardSecUser.id : (w.wardNumber === 72 && wardUser ? wardUser.id : null);
         existing = await Ward.create(w);
