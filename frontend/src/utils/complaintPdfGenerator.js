@@ -218,10 +218,6 @@ export const downloadComplaintPdf = async (complaint, currentUser, lang = 'ta') 
   const rawStatus = cData.status || 'New';
   const status = isTa ? (STATUS_MAP_TA[rawStatus] || rawStatus) : rawStatus;
 
-  // Priority
-  const rawPriority = cData.priority || 'Medium';
-  const priority = isTa ? (PRIORITY_MAP_TA[rawPriority] || rawPriority) : rawPriority;
-
   // Address
   const citizenAddress = cData.citizenAddress || cData.address || cData.location || currentUser?.address || (isTa ? 'வழங்கப்படவில்லை' : 'Not Provided');
 
@@ -286,14 +282,13 @@ export const downloadComplaintPdf = async (complaint, currentUser, lang = 'ta') 
 
   // Localized Strings
   const L = isTa ? {
-    headerTitle: 'தமிழக வெற்றி கழகம் – Digital Governance',
+    headerTitle: 'தமிழக வெற்றிக் கழகம் – Digital Governance',
     headerSubtitle: 'கோயம்புத்தூர் மாவட்டம் • மக்கள் குறைதீர்வு நிர்வாக அமைப்பு (Citizen Grievance Redressal)',
     headerNote: 'உத்தியோகபூர்வ டிஜிட்டல் ஆளுகை குறைதீர்ப்பு பதிவுத் தொகுதி',
     slipTitle: 'புகார் பதிவு ஒப்புகைச் சீட்டு',
     slipSubtitle: 'Official Complaint Acknowledgement Slip',
     refLabel: 'புகார் எண் / Reference No:',
     regDateLabel: 'புகார் பதிவு செய்த தேதி:',
-    priorityLabel: 'முன்னுரிமை:',
     statusLabel: 'தற்போதைய நிலை:',
     sectionTitle: 'புகார் மற்றும் கள இருப்பிட விவரங்கள் (Grievance & Jurisdiction Details)',
     nameLabel: 'புகார் அளித்தவரின் பெயர்:',
@@ -313,7 +308,7 @@ export const downloadComplaintPdf = async (complaint, currentUser, lang = 'ta') 
     remarksLabel: 'வார்டு செயலாளர் குறிப்பு:',
     resolvedDateLabel: 'தீர்வு நாள்:',
     pledge: 'டிஜிட்டல் ஆளுகை உறுதிமொழி: உங்கள் புகார் வெற்றிகரமாக TVK நிர்வாகத் தளத்தில் பதிவு செய்யப்பட்டு தொடர்புடைய வார்டு பொறுப்பாளர்களுக்கு ஒதுக்கீட்டிற்கு அனுப்பப்பட்டுள்ளது. உங்கள் பதிவு செய்யப்பட்ட கைபேசி எண் மூலம் எப்போது வேண்டுமானாலும் புகார் நிலையை நேரலையாகக் கண்காணிக்கலாம்.',
-    footerAdmin: 'தமிழக வெற்றி கழகம் (TVK) • கோயம்புத்தூர் மாவட்ட மத்திய தலைமை நிர்வாகம்',
+    footerAdmin: 'தமிழக வெற்றிக் கழகம் (TVK) • கோயம்புத்தூர் மாவட்ட மத்திய தலைமை நிர்வாகம்',
     downloadOn: 'பதிவிறக்கம்:',
     page: 'பக்கம்',
     of: '/',
@@ -332,7 +327,6 @@ export const downloadComplaintPdf = async (complaint, currentUser, lang = 'ta') 
     slipSubtitle: 'Official Citizen Grievance Redressal Record',
     refLabel: 'Complaint ID / Reference No:',
     regDateLabel: 'Registration Date:',
-    priorityLabel: 'Priority:',
     statusLabel: 'Current Status:',
     sectionTitle: 'GRIEVANCE & JURISDICTION DETAILS',
     nameLabel: 'Complainant Name:',
@@ -365,17 +359,28 @@ export const downloadComplaintPdf = async (complaint, currentUser, lang = 'ta') 
     centerName: 'TVK Coimbatore District Central Governance Center',
   };
 
+  // Tamil header: no letter-spacing (splits Tamil glyphs in html2canvas), taller line-height, lighter weight
+  const headerTitleStyle = isTa
+    ? 'font-size: 20px; font-weight: 700; line-height: 1.5; letter-spacing: normal; margin-bottom: 4px;'
+    : 'font-size: 20px; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 4px;';
+  const headerSubtitleStyle = isTa
+    ? 'font-size: 11px; font-weight: 600; line-height: 1.6; letter-spacing: normal; opacity: 0.95;'
+    : 'font-size: 11px; font-weight: 600; opacity: 0.95; letter-spacing: 0.3px;';
+  const headerNoteStyle = isTa
+    ? 'font-size: 9.5px; line-height: 1.6; letter-spacing: normal; opacity: 0.85; margin-top: 4px;'
+    : 'font-size: 9.5px; opacity: 0.85; margin-top: 2px;';
+
   page1.innerHTML = `
     <div>
       <!-- Official Header Banner -->
       <div style="background: linear-gradient(135deg, #850000 0%, #A00000 50%, #850000 100%); padding: 16px 20px; border-radius: 12px; border-bottom: 4px solid #FFD32A; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; color: #ffffff;">
-        <div style="font-size: 20px; font-weight: 800; color: #FFD32A; letter-spacing: 0.5px; margin-bottom: 4px;">
+        <div style="${headerTitleStyle} color: #FFD32A;">
           ${L.headerTitle}
         </div>
-        <div style="font-size: 11px; font-weight: 600; opacity: 0.95; letter-spacing: 0.3px;">
+        <div style="${headerSubtitleStyle}">
           ${L.headerSubtitle}
         </div>
-        <div style="font-size: 9.5px; opacity: 0.85; margin-top: 2px;">
+        <div style="${headerNoteStyle}">
           ${L.headerNote}
         </div>
       </div>
@@ -398,10 +403,9 @@ export const downloadComplaintPdf = async (complaint, currentUser, lang = 'ta') 
         </div>
       </div>
 
-      <!-- Priority & Date Meta Bar -->
+      <!-- Date & Status Meta Bar -->
       <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 9.5px; padding: 6px 12px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;">
         <div><strong>${L.regDateLabel}</strong> ${regDate}</div>
-        <div><strong>${L.priorityLabel}</strong> <span style="color: #A00000; font-weight: 700;">${priority}</span></div>
         <div><strong>${L.statusLabel}</strong> <span style="color: #047857; font-weight: 700;">${status}</span></div>
       </div>
 
@@ -603,9 +607,18 @@ export const downloadComplaintPdf = async (complaint, currentUser, lang = 'ta') 
   document.body.appendChild(container);
 
   try {
-    // Wait for document fonts to load
-    if (document.fonts && document.fonts.ready) {
-      await document.fonts.ready;
+    // Wait for fonts; load Tamil weights explicitly so html2canvas doesn't capture a fallback font
+    if (document.fonts) {
+      if (isTa && document.fonts.load) {
+        try {
+          await Promise.all(['400', '600', '700', '800'].map((w) => document.fonts.load(`${w} 16px "Noto Sans Tamil"`, 'தமிழ்')));
+        } catch (fontErr) {
+          console.warn('Noto Sans Tamil could not be loaded; using fallback font:', fontErr);
+        }
+      }
+      if (document.fonts.ready) {
+        await document.fonts.ready;
+      }
     }
 
     // High quality rasterization of Page 1
