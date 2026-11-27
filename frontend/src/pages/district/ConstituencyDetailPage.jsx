@@ -54,6 +54,7 @@ export const ConstituencyDetailPage = () => {
     'Madukkarai Nagaram',
     'Vellalur Nagaram',
     'Kinathukadavu Ondriyam',
+    'Kinathukadavu Nagaram',
     'Malumachampatti',
     'Pothanur',
     'Kurichi',

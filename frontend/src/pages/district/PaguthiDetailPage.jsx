@@ -394,7 +394,7 @@ export const PaguthiDetailPage = () => {
       )}
 
       {/* ================= SECTION 2: EMPTY STATE ALERT FOR UNMAPPED URBAN LOCAL BODIES ================= */}
-      {!hasVillages && (paguthi === 'Madukkarai Nagaram' || paguthi === 'Vellalur Nagaram') && (
+      {!hasVillages && (paguthi === 'Kinathukadavu Nagaram' || paguthi === 'Madukkarai Nagaram' || paguthi === 'Vellalur Nagaram') && (
         <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-5 flex items-start space-x-3.5 shadow-xs">
           <FolderTree className="w-6 h-6 text-amber-700 flex-shrink-0 mt-0.5" />
           <div>
