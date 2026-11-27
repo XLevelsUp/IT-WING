@@ -70,12 +70,13 @@ export const SignupPage = () => {
     if (!paguthi) return [];
     const canonicalP = paguthi === 'Podanur' ? 'Pothanur' : paguthi;
 
+    const ruleNums = getWardsForPaguthi(canonicalP);
+
+    // Only DB wards whose number is allowed for this Paguthi (blocks mis-mapped records)
     const matchedDbWards = dbWards.filter((w) => {
       const wp = w.paguthi === 'Podanur' ? 'Pothanur' : w.paguthi;
-      return wp === canonicalP;
+      return wp === canonicalP && ruleNums.includes(Number(w.wardNumber));
     });
-
-    const ruleNums = getWardsForPaguthi(canonicalP);
     const combined = [];
     const seenNumbers = new Set();
 
@@ -288,16 +289,16 @@ export const SignupPage = () => {
               </div>
             </div>
 
-            {/* Profile Image + Text Side-by-Side Horizontal Layout */}
-            <div className="relative z-10 w-full mt-auto pt-3">
-              <div className="flex flex-col sm:flex-row items-end gap-3 sm:gap-4 md:gap-5">
-                
-                {/* PROMINENT LARGE PROFILE IMAGE (BIGGER THAN CONTENT) */}
+            {/* Image + text stay side by side at every width (matches LoginPage); negative margin offsets panel padding so the image sits flush left */}
+            <div className="relative z-10 w-full mt-auto pt-2 -ml-4 sm:-ml-6 md:-ml-7">
+              <div className="flex flex-row items-end gap-2 sm:gap-3 md:gap-4 pl-0">
+
+                {/* PROMINENT PROFILE IMAGE - stepped sizes per breakpoint, aspect ratio preserved */}
                 <div className="flex justify-start items-end flex-shrink-0">
                   <img
                     src={vickyAnaImg}
                     alt="TVK Leadership - Coimbatore"
-                    className="w-[180px] sm:w-[240px] md:w-[260px] lg:w-[320px] xl:w-[360px] max-h-[240px] sm:max-h-[300px] md:max-h-[340px] lg:max-h-[390px] object-contain drop-shadow-2xl filter brightness-105"
+                    className="w-[140px] min-[360px]:w-[155px] min-[390px]:w-[175px] min-[430px]:w-[200px] sm:w-[260px] md:w-[205px] min-[900px]:w-[245px] lg:w-[295px] min-[1150px]:w-[340px] xl:w-[385px] 2xl:w-[415px] max-h-[220px] min-[360px]:max-h-[240px] min-[390px]:max-h-[265px] min-[430px]:max-h-[290px] sm:max-h-[330px] md:max-h-[350px] lg:max-h-[420px] xl:max-h-[470px] 2xl:max-h-[500px] object-contain drop-shadow-2xl filter brightness-105"
                     style={{
                       objectPosition: 'bottom left',
                     }}
@@ -305,16 +306,16 @@ export const SignupPage = () => {
                 </div>
 
                 {/* TEXT CONTENT IMMEDIATELY TO THE RIGHT */}
-                <div className="pb-3 sm:pb-5 md:pb-6 text-left flex-1 min-w-0">
-                  <h2 className="text-base sm:text-lg md:text-xl font-extrabold leading-snug text-white drop-shadow-md">
+                <div className="pb-3 sm:pb-4 md:pb-5 text-left flex-1 min-w-0 pr-2 sm:pr-4 md:pr-5 pl-1 sm:pl-0">
+                  <h2 className="text-xs min-[360px]:text-[13px] sm:text-base md:text-sm lg:text-[17px] xl:text-lg font-bold sm:font-extrabold leading-snug text-white drop-shadow-md">
                     {t('auth.dedicated')}
                     <span className="block text-[#FFD32A] mt-0.5">{t('auth.delivering')}</span>
                   </h2>
 
                   {/* Decorative Underline */}
-                  <div className="w-10 h-1 bg-[#FFD32A] rounded-full mt-2 mb-2 shadow-xs"></div>
+                  <div className="w-6 sm:w-8 h-0.5 sm:h-1 bg-[#FFD32A] rounded-full mt-1 mb-1 shadow-xs"></div>
 
-                  <p className="text-white/95 text-xs sm:text-[12.5px] leading-relaxed drop-shadow-sm font-medium">
+                  <p className="text-white/90 text-[9.5px] min-[360px]:text-[10px] sm:text-xs md:text-[11px] lg:text-xs leading-relaxed drop-shadow-sm font-normal sm:font-medium line-clamp-3 sm:line-clamp-none">
                     {t('auth.leftDesc')}
                   </p>
                 </div>

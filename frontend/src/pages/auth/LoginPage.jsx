@@ -163,7 +163,7 @@ export const LoginPage = () => {
     <div className="min-h-screen bg-[#FFF8F0] flex flex-col font-sans overflow-x-hidden">
       {/* 1. TOP HEADER - EXACT DESIGN WITH LANGUAGE SELECTOR */}
       <header className="w-full bg-gradient-to-r from-[#850000] via-[#A00000] to-[#850000] border-b-[3px] border-[#FFD32A] px-4 sm:px-8 py-3.5 shadow-md flex items-center justify-between relative z-20 flex-shrink-0">
-        <div className="w-10 sm:w-28"></div>
+        <div className="hidden sm:block sm:w-28"></div>
 
         {/* Center Headings */}
         <div className="text-center flex-1 px-2 flex flex-col items-center">
@@ -188,14 +188,14 @@ export const LoginPage = () => {
           </div>
         </div>
 
-        {/* Right: Global Language Switcher */}
-        <div className="w-auto flex justify-end">
-          <LanguageSwitcher variant="dark" />
+        {/* Right: Global Language Switcher (mobile: compact, pinned beside the banner so the title gets full width) */}
+        <div className="absolute right-3 bottom-5 sm:static w-auto flex justify-end">
+          <LanguageSwitcher variant="dark" compact />
         </div>
       </header>
 
-      {/* 2. MAIN CENTERED LOGIN CONTAINER - EQUAL HEIGHT PANELS & COMPACT FORM */}
-      <main className="flex-1 flex flex-col justify-center items-center py-4 sm:py-6 md:py-8 px-3 sm:px-5 md:px-6 w-full">
+      {/* 2. MAIN LOGIN CONTAINER - top-aligned on mobile/tablet, vertically centered on desktop */}
+      <main className="flex-1 flex flex-col justify-start md:justify-center items-center py-4 sm:py-6 md:py-8 px-3 sm:px-5 md:px-6 w-full">
         <div className="w-full max-w-[1240px] bg-white rounded-[24px] shadow-[0_10px_40px_rgba(133,0,0,0.08)] border border-[#E9E2DC]/80 overflow-hidden flex flex-col md:flex-row items-stretch self-center">
           
           {/* ================= LEFT PANEL (EQUAL HEIGHT, PROMINENT PROFILE IMAGE) ================= */}

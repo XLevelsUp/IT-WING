@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Globe, ChevronDown, Check } from 'lucide-react';
 import { changeAppLanguage } from '../../i18n';
 
-export const LanguageSwitcher = ({ variant = 'light' }) => {
+// compact: show short "EN"/"TA" label below the sm breakpoint
+export const LanguageSwitcher = ({ variant = 'light', compact = false }) => {
   const { i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -33,7 +34,8 @@ export const LanguageSwitcher = ({ variant = 'light' }) => {
         }`}
       >
         <Globe className="w-3.5 h-3.5 text-[#FFD32A]" />
-        <span>{currentLang === 'ta' ? 'தமிழ் (TA)' : 'English (EN)'}</span>
+        <span className={compact ? 'hidden sm:inline' : undefined}>{currentLang === 'ta' ? 'தமிழ் (TA)' : 'English (EN)'}</span>
+        {compact && <span className="sm:hidden">{currentLang === 'ta' ? 'TA' : 'EN'}</span>}
         <ChevronDown className={`w-3 h-3 ${isDark ? 'text-white/70' : 'text-slate-500'}`} />
       </button>
 
