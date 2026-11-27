@@ -21,6 +21,7 @@ export const KINATHUKADAVU_LOCAL_BODIES = [
   'Madukkarai Nagaram',
   'Vellalur Nagaram',
   'Kinathukadavu Ondriyam',
+  'Kinathukadavu Nagaram',
   'Malumachampatti',
 ];
 
@@ -49,6 +50,7 @@ export const getCanonicalTargetPaguthis = (pName) => {
     return ['Madukkarai Merkku Ondriyam', 'Madukarai Merku Ondriyam', 'Madukkarai Merku Ondriyam'];
   }
   if (norm === 'Kinathukadavu Ondriyam') return ['Kinathukadavu Ondriyam'];
+  if (norm === 'Kinathukadavu Nagaram') return ['Kinathukadavu Nagaram'];
   if (norm === 'Madukkarai Nagaram') return ['Madukkarai Nagaram'];
   if (norm === 'Vellalur Nagaram') return ['Vellalur Nagaram'];
   return [pName];

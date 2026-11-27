@@ -13,6 +13,7 @@ export const PAGUTHI_OPTIONS = [
   'Madukkarai Nagaram',
   'Vellalur Nagaram',
   'Kinathukadavu Ondriyam',
+  'Kinathukadavu Nagaram',
   'Malumachampatti',
   'Pothanur',
   'Kurichi',
@@ -75,6 +76,7 @@ export const PAGUTHI_VILLAGES_MAP = {
     'Kuthirayampalayam',
     'Pottayandipurambu'
   ],
+  'Kinathukadavu Nagaram': [],
   'Madukkarai Nagaram': [],
   'Vellalur Nagaram': [],
   'Malumachampatti': [
@@ -102,6 +104,7 @@ export const normalizePaguthiName = (name) => {
   if (/^maduk?karai\s+therk?ku\s+ondriyam$/i.test(s)) return 'Madukkarai Therkku Ondriyam';
   if (/^malum[ia]champatti$/i.test(s)) return 'Malumachampatti';
   if (/^kinathukadavu\s+ondriyam$/i.test(s)) return 'Kinathukadavu Ondriyam';
+  if (/^kinathukadavu\s+nagaram$/i.test(s)) return 'Kinathukadavu Nagaram';
   if (/^maduk?karai\s+nagaram$/i.test(s)) return 'Madukkarai Nagaram';
   if (/^vellalur\s+nagaram$/i.test(s)) return 'Vellalur Nagaram';
   if (/^pothanur$/i.test(s) || /^podanur$/i.test(s)) return 'Pothanur';

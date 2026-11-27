@@ -8,6 +8,7 @@ import {
 import api from '../../services/api';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import AdminPageHeader from '../../components/common/AdminPageHeader';
+import { PAGUTHI_OPTIONS } from '../../utils/paguthiWardData';
 
 export const DistrictPage = () => {
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ export const DistrictPage = () => {
     category: 'Assembly Constituency',
     tamilName: 'கிணத்துக்கடவு',
     code: 'KKD',
-    totalPaguthi: 11,
+    totalPaguthi: PAGUTHI_OPTIONS.length,
     wardCount: 6,
     memberCount: 0,
   };
@@ -71,7 +72,7 @@ export const DistrictPage = () => {
     const kinathuPaguthiNames = [
       'Pothanur', 'Podanur', 'Kurichi', 'Sundarapuram',
       'Malumichampatti', 'Malumachampatti', 'Kinathukadavu Ondriyam',
-      'Madukkarai Nagaram', 'Vellalur Nagaram',
+      'Kinathukadavu Nagaram', 'Madukkarai Nagaram', 'Vellalur Nagaram',
       'Thondamuthur Therkku Ondriyam', 'Thondamuthur Merkku Ondriyam',
       'Madukkarai Therkku Ondriyam', 'Madukkarai Merkku Ondriyam'
     ];
@@ -100,7 +101,7 @@ export const DistrictPage = () => {
       kinathuPaguthisSet.add(name);
     }
   });
-  const totalLivePaguthis = kinathuPaguthisSet.size > 0 ? kinathuPaguthisSet.size : (kinathukadavu.totalPaguthi || 11);
+  const totalLivePaguthis = kinathuPaguthisSet.size > 0 ? kinathuPaguthisSet.size : (kinathukadavu.totalPaguthi || PAGUTHI_OPTIONS.length);
 
   return (
     <div className="space-y-6">

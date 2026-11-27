@@ -1,13 +1,13 @@
-import mysql from 'mysql2/promise';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
-import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
+// Shared connection: reads backend/.env and applies SSL/CA settings required by Aiven
+import sequelize from '../config/mysql.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+// Same call shape as mysql2's connection.query: returns [rows]
+const connection = {
+  query: (sql, params = []) => sequelize.query(sql, { replacements: params }),
+  end: () => sequelize.close(),
+};
 
 const ACCOUNTS = [
   // 1. Thondamuthur Therkku Ondriyam
@@ -121,25 +121,7 @@ const ACCOUNTS = [
 ];
 
 async function seed() {
-  const connection = await mysql.createConnection({
-    host: process.env.MYSQL_HOST || 'localhost',
-    user: process.env.MYSQL_USER || 'root',
-    password: process.env.MYSQL_PASSWORD || '',
-    database: process.env.MYSQL_DATABASE || 'tvk_crm',
-    port: process.env.MYSQL_PORT || 3306,
-  });
-
-  console.log('1. Modifying role column in users table if needed...');
-  try {
-    await connection.query(
-      "ALTER TABLE users MODIFY COLUMN role ENUM('superadmin','district_admin','subadmin','ward_secretary','ward_officer','citizen','user','staff','paguthi_seyalaalar') DEFAULT 'citizen'"
-    );
-    console.log('✅ users table role column updated to include paguthi_seyalaalar');
-  } catch (err) {
-    console.log('Note on role column:', err.message);
-  }
-
-  console.log('2. Upserting Paguthi / Ondriyam / Nagaram accounts...');
+  console.log('Upserting Paguthi / Ondriyam / Nagaram accounts...');
   for (const acc of ACCOUNTS) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(acc.password, salt);
