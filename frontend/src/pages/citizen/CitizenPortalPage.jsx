@@ -436,36 +436,32 @@ export const CitizenPortalPage = () => {
           <button
             type="button"
             onClick={() => setActiveSection('overview')}
-            className={`py-1 cursor-pointer transition ${
-              activeSection === 'overview' ? 'text-[#FFD32A] border-b-2 border-[#FFD32A]' : 'hover:text-[#FFD32A]'
-            }`}
+            className={`py-1 cursor-pointer transition ${activeSection === 'overview' ? 'text-[#FFD32A] border-b-2 border-[#FFD32A]' : 'hover:text-[#FFD32A]'
+              }`}
           >
             {t('header.dashboard', 'Dashboard')}
           </button>
           <button
             type="button"
             onClick={() => setActiveSection('book-appointment')}
-            className={`py-1 cursor-pointer transition ${
-              activeSection === 'book-appointment' ? 'text-[#FFD32A] border-b-2 border-[#FFD32A]' : 'hover:text-[#FFD32A]'
-            }`}
+            className={`py-1 cursor-pointer transition ${activeSection === 'book-appointment' ? 'text-[#FFD32A] border-b-2 border-[#FFD32A]' : 'hover:text-[#FFD32A]'
+              }`}
           >
             {t('citizen.bookAppointment', 'Book Appointment')}
           </button>
           <button
             type="button"
             onClick={() => setActiveSection('my-appointments')}
-            className={`py-1 cursor-pointer transition ${
-              activeSection === 'my-appointments' ? 'text-[#FFD32A] border-b-2 border-[#FFD32A]' : 'hover:text-[#FFD32A]'
-            }`}
+            className={`py-1 cursor-pointer transition ${activeSection === 'my-appointments' ? 'text-[#FFD32A] border-b-2 border-[#FFD32A]' : 'hover:text-[#FFD32A]'
+              }`}
           >
             {t('citizen.trackAppointment', 'My Appointments')} ({appointments.length})
           </button>
           <button
             type="button"
             onClick={() => setActiveSection('my-complaints')}
-            className={`py-1 cursor-pointer transition ${
-              activeSection === 'my-complaints' ? 'text-[#FFD32A] border-b-2 border-[#FFD32A]' : 'hover:text-[#FFD32A]'
-            }`}
+            className={`py-1 cursor-pointer transition ${activeSection === 'my-complaints' ? 'text-[#FFD32A] border-b-2 border-[#FFD32A]' : 'hover:text-[#FFD32A]'
+              }`}
           >
             {t('citizen.myComplaints', 'My Complaints')} ({complaints.length})
           </button>
@@ -809,22 +805,20 @@ export const CitizenPortalPage = () => {
           <button
             type="button"
             onClick={() => setActiveSection('overview')}
-            className={`w-full sm:w-auto px-4 py-2.5 rounded-xl transition cursor-pointer flex items-center justify-center sm:justify-start space-x-1.5 ${
-              activeSection === 'overview'
+            className={`w-full sm:w-auto px-4 py-2.5 rounded-xl transition cursor-pointer flex items-center justify-center sm:justify-start space-x-1.5 ${activeSection === 'overview'
                 ? 'bg-[#A00000] text-white shadow-xs'
                 : 'text-slate-600 hover:bg-slate-100'
-            }`}
+              }`}
           >
             <span>{t('citizen.publicServices', 'Public Services Overview')}</span>
           </button>
           <button
             type="button"
             onClick={() => setActiveSection('book-appointment')}
-            className={`w-full sm:w-auto px-4 py-2.5 rounded-xl transition cursor-pointer flex items-center justify-center sm:justify-start space-x-1.5 ${
-              activeSection === 'book-appointment'
+            className={`w-full sm:w-auto px-4 py-2.5 rounded-xl transition cursor-pointer flex items-center justify-center sm:justify-start space-x-1.5 ${activeSection === 'book-appointment'
                 ? 'bg-[#A00000] text-white shadow-xs'
                 : 'text-slate-600 hover:bg-slate-100'
-            }`}
+              }`}
           >
             <CalendarCheck className="w-3.5 h-3.5 shrink-0" />
             <span>{t('citizen.bookAppointment', 'Book Appointment Form')}</span>
@@ -832,11 +826,10 @@ export const CitizenPortalPage = () => {
           <button
             type="button"
             onClick={() => setActiveSection('my-appointments')}
-            className={`w-full sm:w-auto px-4 py-2.5 rounded-xl transition cursor-pointer flex items-center justify-center sm:justify-start space-x-1.5 ${
-              activeSection === 'my-appointments'
+            className={`w-full sm:w-auto px-4 py-2.5 rounded-xl transition cursor-pointer flex items-center justify-center sm:justify-start space-x-1.5 ${activeSection === 'my-appointments'
                 ? 'bg-[#A00000] text-white shadow-xs'
                 : 'text-slate-600 hover:bg-slate-100'
-            }`}
+              }`}
           >
             <Clock className="w-3.5 h-3.5 shrink-0" />
             <span>{t('citizen.myAppointments', 'My Appointments')} ({appointments.length})</span>
@@ -844,11 +837,10 @@ export const CitizenPortalPage = () => {
           <button
             type="button"
             onClick={() => setActiveSection('my-complaints')}
-            className={`w-full sm:w-auto px-4 py-2.5 rounded-xl transition cursor-pointer flex items-center justify-center sm:justify-start space-x-1.5 ${
-              activeSection === 'my-complaints'
+            className={`w-full sm:w-auto px-4 py-2.5 rounded-xl transition cursor-pointer flex items-center justify-center sm:justify-start space-x-1.5 ${activeSection === 'my-complaints'
                 ? 'bg-[#A00000] text-white shadow-xs'
                 : 'text-slate-600 hover:bg-slate-100'
-            }`}
+              }`}
           >
             <FileText className="w-3.5 h-3.5 shrink-0" />
             <span>{t('citizen.myComplaints', 'My Complaints')} ({complaints.length})</span>
@@ -1069,13 +1061,12 @@ export const CitizenPortalPage = () => {
                     return (
                       <div
                         key={c._id}
-                        className={`p-4 rounded-2xl border transition text-xs space-y-2.5 ${
-                          isCompleted
+                        className={`p-4 rounded-2xl border transition text-xs space-y-2.5 ${isCompleted
                             ? 'bg-emerald-50/40 border-emerald-300'
                             : isInProgress
-                            ? 'bg-blue-50/30 border-blue-200'
-                            : 'bg-amber-50/20 border-amber-200'
-                        }`}
+                              ? 'bg-blue-50/30 border-blue-200'
+                              : 'bg-amber-50/20 border-amber-200'
+                          }`}
                       >
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
                           <div className="flex items-center space-x-2 flex-wrap">
@@ -1242,11 +1233,10 @@ export const CitizenPortalPage = () => {
                         <button
                           type="button"
                           onClick={() => setSelectedCategory('All')}
-                          className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all focus:outline-none focus:ring-2 focus:ring-[#850000] ${
-                            selectedCategory === 'All'
+                          className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all focus:outline-none focus:ring-2 focus:ring-[#850000] ${selectedCategory === 'All'
                               ? 'bg-[#850000] text-white shadow-xs'
                               : 'bg-slate-50 text-slate-700 border border-slate-200 hover:border-[#850000] hover:text-[#850000]'
-                          }`}
+                            }`}
                         >
                           All Categories ({projects.length})
                         </button>
@@ -1255,11 +1245,10 @@ export const CitizenPortalPage = () => {
                             key={cat}
                             type="button"
                             onClick={() => setSelectedCategory(cat)}
-                            className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all focus:outline-none focus:ring-2 focus:ring-[#850000] ${
-                              selectedCategory === cat
+                            className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all focus:outline-none focus:ring-2 focus:ring-[#850000] ${selectedCategory === cat
                                 ? 'bg-[#850000] text-white shadow-xs'
                                 : 'bg-slate-50 text-slate-700 border border-slate-200 hover:border-[#850000] hover:text-[#850000]'
-                            }`}
+                              }`}
                           >
                             {cat} ({grouped[cat].length})
                           </button>
@@ -1291,8 +1280,8 @@ export const CitizenPortalPage = () => {
                               const dateStr = proj.startDate
                                 ? new Date(proj.startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
                                 : proj.createdAt
-                                ? new Date(proj.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
-                                : 'Initiative';
+                                  ? new Date(proj.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+                                  : 'Initiative';
                               const imgUrl = getSafeImageUrl(proj.imageUrl);
 
                               return (
@@ -1327,13 +1316,12 @@ export const CitizenPortalPage = () => {
                                           {proj.location || 'Coimbatore District'}
                                         </span>
                                         <span
-                                          className={`px-2 py-0.5 rounded-full font-bold text-[10px] shrink-0 ${
-                                            proj.status === 'Completed'
+                                          className={`px-2 py-0.5 rounded-full font-bold text-[10px] shrink-0 ${proj.status === 'Completed'
                                               ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                                               : proj.status === 'Planned'
-                                              ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                                              : 'bg-amber-50 text-amber-800 border border-amber-200'
-                                          }`}
+                                                ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                                                : 'bg-amber-50 text-amber-800 border border-amber-200'
+                                            }`}
                                         >
                                           {proj.status || 'Ongoing'}
                                         </span>
@@ -2114,13 +2102,12 @@ export const CitizenPortalPage = () => {
                     return (
                       <div
                         key={c._id || c.id}
-                        className={`p-5 rounded-2xl border transition text-xs space-y-3 ${
-                          isCompleted
+                        className={`p-5 rounded-2xl border transition text-xs space-y-3 ${isCompleted
                             ? 'bg-emerald-50/40 border-emerald-300'
                             : isInProgress
-                            ? 'bg-blue-50/30 border-blue-200'
-                            : 'bg-amber-50/20 border-amber-200'
-                        }`}
+                              ? 'bg-blue-50/30 border-blue-200'
+                              : 'bg-amber-50/20 border-amber-200'
+                          }`}
                       >
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100/80 pb-2.5">
                           <div className="flex items-center space-x-2 flex-wrap">

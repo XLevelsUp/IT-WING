@@ -2,6 +2,7 @@ import * as XLSX from 'xlsx';
 import { Op } from 'sequelize';
 import sequelize from '../config/mysql.js';
 import { isVillageValidForPaguthi, getCanonicalTargetPaguthis } from '../utils/paguthiVillageData.js';
+import { sendGrievanceRegisteredSms } from '../services/smsService.js';
 import {
   Issue,
   IssueActivity,
@@ -681,6 +682,9 @@ export const createIssue = async (req, res) => {
 
     const populated = await Issue.findByPk(issue.id, { include: issueIncludes });
     res.status(201).json({ success: true, data: formatIssue(populated || issue) });
+
+    // SMS confirmation with the token number (runs in the background, never blocks or fails the request)
+    sendGrievanceRegisteredSms(issue, req.user);
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
