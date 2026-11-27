@@ -60,7 +60,7 @@ export const WardDetailPage = () => {
   const paguthiName = ward.paguthi || 'Pothanur';
   const isMunicipalCleanWard =
     ['Pothanur', 'Podanur', 'Kurichi', 'Sundarapuram'].includes(paguthiName) ||
-    [85, 94, 95, 96, 98, 99, 100].includes(Number(ward.wardNumber));
+    [85, 94, 95, 96, 97, 98, 99, 100].includes(Number(ward.wardNumber));
 
   const downloadWardReportExcel = () => {
     const rows = issues.map((i) => ({

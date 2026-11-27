@@ -96,8 +96,8 @@ async function runVerification() {
       `Kurichi wards are [85, 96, 98] (got: [${kWardNums.join(', ')}])`
     );
     assert(
-      JSON.stringify(sWardNums) === JSON.stringify([94, 96]),
-      `Sundarapuram wards are [94, 96] (got: [${sWardNums.join(', ')}])`
+      JSON.stringify(sWardNums) === JSON.stringify([94, 97]),
+      `Sundarapuram wards are [94, 97] (got: [${sWardNums.join(', ')}])`
     );
 
     // 4. Task 5: Verify Right-Side Registration Table is Empty Initially
@@ -212,7 +212,7 @@ async function runVerification() {
     const paguthiAccounts = [
       { username: 'pothanur', password: 'pothanur@2026', paguthi: 'Pothanur', expectedWards: 3, expectedWardNums: [95, 99, 100] },
       { username: 'kurichi', password: 'kurichi@2024', paguthi: 'Kurichi', expectedWards: 3, expectedWardNums: [85, 96, 98] },
-      { username: 'sundarapuram', password: 'sundarapurum@26', paguthi: 'Sundarapuram', expectedWards: 2, expectedWardNums: [94, 96] },
+      { username: 'sundarapuram', password: 'sundarapurum@26', paguthi: 'Sundarapuram', expectedWards: 2, expectedWardNums: [94, 97] },
     ];
 
     for (const pa of paguthiAccounts) {

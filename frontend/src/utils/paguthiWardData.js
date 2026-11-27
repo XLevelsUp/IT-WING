@@ -152,7 +152,7 @@ for (let i = 1; i <= 100; i++) {
  * 
  * Special Mappings:
  * - Pothanur: ONLY Ward 95, Ward 99, Ward 100 (Count: 3)
- * - Sundarapuram: ONLY Ward 94, Ward 96 (Count: 2)
+ * - Sundarapuram: ONLY Ward 94, Ward 97 (Count: 2)
  * - Kurichi: ONLY Ward 85, Ward 96, Ward 98 (Count: 3)
  * 
  * Remaining options:
@@ -165,7 +165,7 @@ export const getWardsForPaguthi = (paguthi) => {
     return [95, 99, 100];
   }
   if (p === 'Sundarapuram') {
-    return [94, 96];
+    return [94, 97];
   }
   if (p === 'Kurichi') {
     return [85, 96, 98];

@@ -32,7 +32,7 @@ async function setup() {
   // Target:
   // Pothanur: Ward 95, Ward 99, Ward 100
   // Kurichi: Ward 85, Ward 96, Ward 98
-  // Sundarapuram: Ward 94, Ward 96
+  // Sundarapuram: Ward 94, Ward 97
 
   // Reuse Ward 99 for Pothanur
   let p99 = await Ward.findOne({ where: { constituencyId: 6, wardNumber: 99 } });
@@ -157,20 +157,28 @@ async function setup() {
     });
   }
 
-  // Reuse or create Ward 96 for Sundarapuram
-  let s96 = await Ward.findOne({ where: { constituencyId: 6, wardNumber: 96, paguthi: 'Sundarapuram' } });
-  if (!s96) {
-    s96 = await Ward.create({
-      wardNumber: 96,
-      wardName: 'Sundarapuram Ward 96',
-      tamilName: 'சுந்தராபுரம் வார்டு 96',
+  // Reuse or create Ward 97 for Sundarapuram (Ward 96 belongs to Kurichi).
+  // If an old "Sundarapuram Ward 96" row exists, renumber it to 97 so linked complaints stay attached.
+  let s97 = await Ward.findOne({ where: { constituencyId: 6, wardNumber: 97, paguthi: 'Sundarapuram' } });
+  const legacyS96 = await Ward.findOne({ where: { constituencyId: 6, wardNumber: 96, paguthi: 'Sundarapuram' } });
+  if (!s97 && legacyS96) {
+    legacyS96.wardNumber = 97;
+    legacyS96.wardName = 'Sundarapuram Ward 97';
+    legacyS96.tamilName = 'சுந்தராபுரம் வார்டு 97';
+    await legacyS96.save();
+    s97 = legacyS96;
+  } else if (!s97) {
+    s97 = await Ward.create({
+      wardNumber: 97,
+      wardName: 'Sundarapuram Ward 97',
+      tamilName: 'சுந்தராபுரம் வார்டு 97',
       paguthi: 'Sundarapuram',
       constituencyId: 6,
       zone: 'South Zone',
     });
   }
 
-  const targetWardIds = [p95.id, p99.id, p100.id, k85.id, k96.id, k98.id, s94.id, s96.id];
+  const targetWardIds = [p95.id, p99.id, p100.id, k85.id, k96.id, k98.id, s94.id, s97.id];
 
   // Reassign complaints linked to other constituency 6 wards before removing unused wards
   await Issue.update({ wardId: p99.id }, { where: { paguthi: 'Pothanur', constituencyId: 6, wardId: { [Op.notIn]: targetWardIds } } });

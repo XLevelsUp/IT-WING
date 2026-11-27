@@ -167,13 +167,15 @@ export const PaguthiDetailPage = () => {
     }
   }
 
+  // Sundarapuram: ONLY Ward 94 and Ward 97 (Ward 96 belongs to Kurichi)
   if ((paguthi || paguthiName) === 'Sundarapuram') {
-    const has96 = displayWards.some((w) => Number(w.wardNumber) === 96);
-    if (!has96) {
+    displayWards = displayWards.filter((w) => [94, 97].includes(Number(w.wardNumber)));
+    const has97 = displayWards.some((w) => Number(w.wardNumber) === 97);
+    if (!has97) {
       displayWards.push({
-        id: 'ward-96-sundarapuram',
-        wardNumber: 96,
-        wardName: 'Ward 96',
+        id: 'ward-97-sundarapuram',
+        wardNumber: 97,
+        wardName: 'Ward 97',
         paguthi: 'Sundarapuram',
         wardSecretary: 'Not Assigned',
         wardSecretaryRegistrationStatus: 'Not Assigned',

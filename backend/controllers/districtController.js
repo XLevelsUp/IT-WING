@@ -336,12 +336,17 @@ export const getPaguthiDetails = async (req, res) => {
     }
 
     // Find all wards for this paguthi dynamically from MySQL
-    const allPaguthiWards = await Ward.findAll({
+    let allPaguthiWards = await Ward.findAll({
       where: {
         paguthi: { [Op.in]: targetPaguthis },
       },
       order: [['wardNumber', 'ASC']],
     });
+
+    // Sundarapuram: ONLY Ward 94 and Ward 97 (Ward 96 belongs to Kurichi)
+    if (canonicalPaguthiName === 'Sundarapuram') {
+      allPaguthiWards = allPaguthiWards.filter((w) => [94, 97].includes(Number(w.wardNumber)));
+    }
 
     const mappedVillages = getVillagesForPaguthi(canonicalPaguthiName) || [];
 

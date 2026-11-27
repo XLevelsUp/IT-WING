@@ -232,8 +232,8 @@ export const downloadComplaintPdf = async (complaint, currentUser, lang = 'ta') 
   const officialDetails = assignedSecretary
     ? `${assignedSecretary}${secretaryPhone ? ` (${secretaryPhone})` : ''}${assignedDepartment ? ` • ${assignedDepartment}` : ''}`
     : assignedDepartment
-    ? assignedDepartment
-    : (isTa ? 'ஒதுக்கீடு பரிசீலனையில் உள்ளது (Under Assignment)' : 'Under Assignment Review');
+      ? assignedDepartment
+      : (isTa ? 'ஒதுக்கீடு பரிசீலனையில் உள்ளது (Under Assignment)' : 'Under Assignment Review');
 
   const actionTaken = cData.actionTaken || cData.finalReport || null;
   const wardRemarks = cData.wardSecretaryRemarks || null;
@@ -286,7 +286,7 @@ export const downloadComplaintPdf = async (complaint, currentUser, lang = 'ta') 
 
   // Localized Strings
   const L = isTa ? {
-    headerTitle: 'தமிழ்நாடு வெற்றி கழகம் – Digital Governance',
+    headerTitle: 'தமிழக வெற்றி கழகம் – Digital Governance',
     headerSubtitle: 'கோயம்புத்தூர் மாவட்டம் • மக்கள் குறைதீர்வு நிர்வாக அமைப்பு (Citizen Grievance Redressal)',
     headerNote: 'உத்தியோகபூர்வ டிஜிட்டல் ஆளுகை குறைதீர்ப்பு பதிவுத் தொகுதி',
     slipTitle: 'புகார் பதிவு ஒப்புகைச் சீட்டு',
@@ -313,7 +313,7 @@ export const downloadComplaintPdf = async (complaint, currentUser, lang = 'ta') 
     remarksLabel: 'வார்டு செயலாளர் குறிப்பு:',
     resolvedDateLabel: 'தீர்வு நாள்:',
     pledge: 'டிஜிட்டல் ஆளுகை உறுதிமொழி: உங்கள் புகார் வெற்றிகரமாக TVK நிர்வாகத் தளத்தில் பதிவு செய்யப்பட்டு தொடர்புடைய வார்டு பொறுப்பாளர்களுக்கு ஒதுக்கீட்டிற்கு அனுப்பப்பட்டுள்ளது. உங்கள் பதிவு செய்யப்பட்ட கைபேசி எண் மூலம் எப்போது வேண்டுமானாலும் புகார் நிலையை நேரலையாகக் கண்காணிக்கலாம்.',
-    footerAdmin: 'தமிழ்நாடு வெற்றி கழகம் (TVK) • கோயம்புத்தூர் மாவட்ட மத்திய தலைமை நிர்வாகம்',
+    footerAdmin: 'தமிழக வெற்றி கழகம் (TVK) • கோயம்புத்தூர் மாவட்ட மத்திய தலைமை நிர்வாகம்',
     downloadOn: 'பதிவிறக்கம்:',
     page: 'பக்கம்',
     of: '/',
