@@ -675,8 +675,14 @@ export const CitizenPortalPage = () => {
               </div>
 
               <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight drop-shadow-md text-white">
-                TVK Citizen Public Service Portal
+                TamilNadu's First Grievance Portal
               </h2>
+
+              <div className="text-sm sm:text-base font-bold text-white leading-snug drop-shadow-sm">
+                <p>முதன்மைத் தொகுதி</p>
+                <p>முன்னேற்றத்திற்கான தொகுதி</p>
+                <p className="text-[#FFD32A]">நமது கிணத்துக்கடவு தொகுதி!</p>
+              </div>
 
               <h3 className="text-sm sm:text-base font-bold text-[#FFD32A] drop-shadow-sm">
                 உங்கள் குறை - எங்கள் பொறுப்பு
@@ -725,8 +731,14 @@ export const CitizenPortalPage = () => {
               </div>
 
               <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight drop-shadow-md text-white">
-                TVK Citizen Public Service Portal
+                TamilNadu's First Grievance Portal
               </h2>
+
+              <div className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white leading-snug drop-shadow-sm">
+                <p>முதன்மைத் தொகுதி</p>
+                <p>முன்னேற்றத்திற்கான தொகுதி</p>
+                <p className="text-[#FFD32A]">நமது கிணத்துக்கடவு தொகுதி!</p>
+              </div>
 
               <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-[#FFD32A] drop-shadow-sm">
                 உங்கள் குறை - எங்கள் பொறுப்பு

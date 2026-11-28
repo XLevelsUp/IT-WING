@@ -440,10 +440,12 @@ export const downloadComplaintPdf = async (complaint, currentUser, lang = 'ta') 
               <td style="padding: 7px 10px; background: #FFF8F0; font-weight: 700; color: #374151;">${L.addressLabel}</td>
               <td colspan="3" style="padding: 7px 10px; color: #374151;">${citizenAddress}</td>
             </tr>
+            <!-- Assigned Officer / Secretary row: hidden for now (re-enable by uncommenting)
             <tr>
-              <td style="padding: 7px 10px; background: #FFF8F0; font-weight: 700; color: #374151;">${L.officerLabel}</td>
-              <td colspan="3" style="padding: 7px 10px; font-weight: 600; color: #1e3a8a;">${officialDetails}</td>
+              <td style="padding: 7px 10px; background: #FFF8F0; font-weight: 700; color: #374151;">\${L.officerLabel}</td>
+              <td colspan="3" style="padding: 7px 10px; font-weight: 600; color: #1e3a8a;">\${officialDetails}</td>
             </tr>
+            -->
           </tbody>
         </table>
       </div>

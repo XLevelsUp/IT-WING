@@ -20,7 +20,7 @@ import { useNotification } from '../../context/NotificationContext';
 import LanguageSwitcher from '../../components/common/LanguageSwitcher';
 import Footer from '../../components/layout/Footer';
 import coimbatoreCityBg from '../../assets/coimbatore-city-bg.png';
-import vickyAnaImg from '../../assets/vicky ana.png';
+import vickyAnaImg from '../../assets/login-leaders.png';
 import heroImg from '../../assets/hero.png';
 import image3 from '../../assets/image3.png';
 
@@ -168,7 +168,7 @@ export const LoginPage = () => {
         {/* Center Headings */}
         <div className="text-center flex-1 px-2 flex flex-col items-center">
           <h1 className="text-white text-base sm:text-xl md:text-2xl font-bold tracking-normal drop-shadow-xs">
-            {t('header.systemTitle')}
+            {t('header.loginHeading', "TamilNadu's First Grievance Portal")}
           </h1>
           <div className="flex items-center justify-center space-x-2 mt-0.5">
             <span className="w-6 sm:w-10 h-[1px] bg-[#FFD32A]"></span>
