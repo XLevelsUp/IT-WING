@@ -21,6 +21,7 @@ export const KINATHUKADAVU_LOCAL_BODIES = [
   'Madukkarai Nagaram',
   'Vellalur Nagaram',
   'Kinathukadavu Ondriyam',
+  'Kinathukadavu Nagaram',
   'Malumachampatti',
 ];
 
@@ -49,6 +50,7 @@ export const getCanonicalTargetPaguthis = (pName) => {
     return ['Madukkarai Merkku Ondriyam', 'Madukarai Merku Ondriyam', 'Madukkarai Merku Ondriyam'];
   }
   if (norm === 'Kinathukadavu Ondriyam') return ['Kinathukadavu Ondriyam'];
+  if (norm === 'Kinathukadavu Nagaram') return ['Kinathukadavu Nagaram'];
   if (norm === 'Madukkarai Nagaram') return ['Madukkarai Nagaram'];
   if (norm === 'Vellalur Nagaram') return ['Vellalur Nagaram'];
   return [pName];
@@ -336,17 +338,12 @@ export const getPaguthiDetails = async (req, res) => {
     }
 
     // Find all wards for this paguthi dynamically from MySQL
-    let allPaguthiWards = await Ward.findAll({
+    const allPaguthiWards = await Ward.findAll({
       where: {
         paguthi: { [Op.in]: targetPaguthis },
       },
       order: [['wardNumber', 'ASC']],
     });
-
-    // Sundarapuram: ONLY Ward 94 and Ward 97 (Ward 96 belongs to Kurichi)
-    if (canonicalPaguthiName === 'Sundarapuram') {
-      allPaguthiWards = allPaguthiWards.filter((w) => [94, 97].includes(Number(w.wardNumber)));
-    }
 
     const mappedVillages = getVillagesForPaguthi(canonicalPaguthiName) || [];
 
@@ -597,12 +594,7 @@ export const getPaguthiDetails = async (req, res) => {
       };
     }
 
-    let totalWards = augmentedWards.length;
-    if (!requestedVillage) {
-      if (canonicalPaguthiName === 'Pothanur') totalWards = 3;
-      else if (canonicalPaguthiName === 'Kurichi') totalWards = 3;
-      else if (canonicalPaguthiName === 'Sundarapuram') totalWards = 2;
-    }
+    const totalWards = augmentedWards.length;
 
     const totalComplaints = await Issue.count({ where: paguthiIssueWhere });
     const newComplaints = await Issue.count({ where: { ...paguthiIssueWhere, status: 'New' } });

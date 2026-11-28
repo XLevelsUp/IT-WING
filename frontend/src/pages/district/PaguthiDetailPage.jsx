@@ -137,57 +137,8 @@ export const PaguthiDetailPage = () => {
 
   const isMunicipalCleanWard = ['Pothanur', 'Podanur', 'Kurichi', 'Sundarapuram'].includes(paguthi || paguthiName);
 
-  let displayWards = Array.isArray(wards) ? [...wards] : [];
-
-  // Pothanur: Ensure only ONE Ward 95 card is displayed
-  if (['Pothanur', 'Podanur'].includes(paguthi || paguthiName)) {
-    const ward95List = displayWards.filter((w) => Number(w.wardNumber) === 95);
-    if (ward95List.length > 1) {
-      const pothanurWard95 = ward95List.find((w) => ['Pothanur', 'Podanur'].includes(w.paguthi)) || ward95List[0];
-      const otherWard95 = ward95List.find((w) => w !== pothanurWard95);
-
-      const mergedWard95 = {
-        ...pothanurWard95,
-        wardSecretary: (pothanurWard95.wardSecretary && pothanurWard95.wardSecretary !== 'Not Assigned')
-          ? pothanurWard95.wardSecretary
-          : (otherWard95?.wardSecretary || pothanurWard95.wardSecretary || 'Not Assigned'),
-        wardSecretaryRegistrationStatus: (pothanurWard95.wardSecretaryRegistrationStatus === 'Registered')
-          ? 'Registered'
-          : (otherWard95?.wardSecretaryRegistrationStatus || pothanurWard95.wardSecretaryRegistrationStatus || 'Not Assigned'),
-        contactNumber: pothanurWard95.contactNumber || otherWard95?.contactNumber || null,
-        totalComplaints: Math.max(Number(pothanurWard95.totalComplaints) || 0, Number(otherWard95?.totalComplaints) || 0),
-        newComplaints: Math.max(Number(pothanurWard95.newComplaints) || 0, Number(otherWard95?.newComplaints) || 0),
-        pendingComplaints: Math.max(Number(pothanurWard95.pendingComplaints) || 0, Number(otherWard95?.pendingComplaints) || 0),
-        inProgressComplaints: Math.max(Number(pothanurWard95.inProgressComplaints) || 0, Number(otherWard95?.inProgressComplaints) || 0),
-        completedComplaints: Math.max(Number(pothanurWard95.completedComplaints) || 0, Number(otherWard95?.completedComplaints) || 0),
-      };
-
-      displayWards = displayWards.filter((w) => Number(w.wardNumber) !== 95);
-      displayWards.push(mergedWard95);
-    }
-  }
-
-  // Sundarapuram: ONLY Ward 94 and Ward 97 (Ward 96 belongs to Kurichi)
-  if ((paguthi || paguthiName) === 'Sundarapuram') {
-    displayWards = displayWards.filter((w) => [94, 97].includes(Number(w.wardNumber)));
-    const has97 = displayWards.some((w) => Number(w.wardNumber) === 97);
-    if (!has97) {
-      displayWards.push({
-        id: 'ward-97-sundarapuram',
-        wardNumber: 97,
-        wardName: 'Ward 97',
-        paguthi: 'Sundarapuram',
-        wardSecretary: 'Not Assigned',
-        wardSecretaryRegistrationStatus: 'Not Assigned',
-        contactNumber: null,
-        totalComplaints: 0,
-        newComplaints: 0,
-        pendingComplaints: 0,
-        inProgressComplaints: 0,
-        completedComplaints: 0,
-      });
-    }
-  }
+  // Ward cards come straight from the database mapping (see scripts/fix_municipal_ward_mapping.mjs)
+  const displayWards = Array.isArray(wards) ? [...wards] : [];
   displayWards.sort((a, b) => (Number(a.wardNumber) || 0) - (Number(b.wardNumber) || 0));
 
   return (
@@ -394,7 +345,7 @@ export const PaguthiDetailPage = () => {
       )}
 
       {/* ================= SECTION 2: EMPTY STATE ALERT FOR UNMAPPED URBAN LOCAL BODIES ================= */}
-      {!hasVillages && (paguthi === 'Madukkarai Nagaram' || paguthi === 'Vellalur Nagaram') && (
+      {!hasVillages && (paguthi === 'Kinathukadavu Nagaram' || paguthi === 'Madukkarai Nagaram' || paguthi === 'Vellalur Nagaram') && (
         <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-5 flex items-start space-x-3.5 shadow-xs">
           <FolderTree className="w-6 h-6 text-amber-700 flex-shrink-0 mt-0.5" />
           <div>
